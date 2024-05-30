@@ -31,12 +31,12 @@ def generar_problema_matematico():
     return problema, resultado
 
 class Player:
-    def _init_(self, symbol, is_computer=False):
+    def __init__(self, symbol, is_computer=False):
         self.symbol = symbol
         self.is_computer = is_computer
 
 class Board:
-    def _init_(self):
+    def __init__(self):
         self.board = [["" for _ in range(3)] for _ in range(3)]
         self.winning_line = None
 
@@ -90,7 +90,7 @@ class Board:
         pygame.display.flip()
 
 class Game:
-    def _init_(self):
+    def __init__(self):
         self.screen = pygame.display.set_mode((1100, 600))  
         pygame.display.set_caption("Tic Tac Toe")
         self.board = Board()
@@ -320,5 +320,5 @@ class Game:
         self.screen.blit(player_score_text, (850, 200))
         self.screen.blit(computer_score_text, (850, 300))
 
-if _name_ == "_main_":
+if __name__ == "__main__":
     Game().run()
