@@ -31,12 +31,12 @@ def generar_problema_matematico():
     return problema, resultado
 
 class Player:
-    def __init__(self, symbol, is_computer=False):
+    def _init_(self, symbol, is_computer=False):
         self.symbol = symbol
         self.is_computer = is_computer
 
 class Board:
-    def __init__(self):
+    def _init_(self):
         self.board = [["" for _ in range(3)] for _ in range(3)]
         self.winning_line = None
 
@@ -90,7 +90,7 @@ class Board:
         pygame.display.flip()
 
 class Game:
-    def __init__(self):
+    def _init_(self):
         self.screen = pygame.display.set_mode((1100, 600))  
         pygame.display.set_caption("Tic Tac Toe")
         self.board = Board()
@@ -145,14 +145,14 @@ class Game:
             else:
                 self.player_score += 1
                 self.computer_starts = False
-            self.mostrar_mensaje("Resultado del Juego", f"{self.player.symbol} vs {self.computer.symbol}", f"Ganador: {winner}", "¡Felicidades!")
+            self.mostrar_mensaje("Resultado del juego", f"{self.player.symbol} vs {self.computer.symbol}", f"Ganador: {winner}", "¡Felicidades!")
             self.reset_game()
         elif all(all(cell != "" for cell in row) for row in self.board.board):
             self.board.draw(self.screen)  
             pygame.display.flip()
             print("It's a tie!")
             pygame.time.wait(2000)
-            self.mostrar_mensaje("Resultado del Juego", f"{self.player.symbol} vs {self.computer.symbol}", "Empate", "¡Intenta de nuevo!")
+            self.mostrar_mensaje("Resultado del juego", f"{self.player.symbol} vs {self.computer.symbol}", "Empate", "¡Intenta de nuevo!")
             self.computer_starts = not self.computer_starts
             self.reset_game()
         else:
@@ -211,7 +211,7 @@ class Game:
         problem_window_y = (screen_height - problem_window_height) // 2
 
         root = pygame.display.set_mode((problem_window_width, problem_window_height))
-        pygame.display.set_caption("Problema Matemático")
+        pygame.display.set_caption("Tic Tac Toe")
 
         start_time = time.time()
         user_input = ""
@@ -246,6 +246,41 @@ class Game:
             root.blit(input_surface, (20, 100))
             pygame.display.flip()
 
+    def confirm_exit(self):
+        confirm_surf = pygame.Surface((800, 200))
+        confirm_surf.fill(WHITE)
+
+        message_surf = font_small.render("¿Estás seguro de que quieres salir?", True, BLACK)
+        boton_yes_surf = font_small.render("Sí", True, WHITE)
+        boton_no_surf = font_small.render("No", True, WHITE)
+
+        boton_yes_rect = pygame.Rect(50, 100, 100, 50)
+        boton_no_rect = pygame.Rect(250, 100, 100, 50)
+
+        confirm_surf.blit(message_surf, (30, 30))
+        pygame.draw.rect(confirm_surf, RED, boton_yes_rect)
+        pygame.draw.rect(confirm_surf, BLUE, boton_no_rect)
+        confirm_surf.blit(boton_yes_surf, (80, 110))
+        confirm_surf.blit(boton_no_surf, (280, 110))
+
+        confirm_rect = confirm_surf.get_rect(center=(self.screen.get_width() // 2, self.screen.get_height() // 2))
+
+        waiting = True
+        while waiting:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    if boton_yes_rect.collidepoint(event.pos[0] - confirm_rect.x, event.pos[1] - confirm_rect.y):
+                        pygame.quit()
+                        sys.exit()
+                    elif boton_no_rect.collidepoint(event.pos[0] - confirm_rect.x, event.pos[1] - confirm_rect.y):
+                        waiting = False
+
+            self.screen.blit(confirm_surf, confirm_rect.topleft)
+            pygame.display.flip()
+
     def run(self):
         if self.mostrar_problema_matematico():
             self.screen = pygame.display.set_mode((1100, 600))  
@@ -253,7 +288,7 @@ class Game:
             while running:
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
-                        running = False
+                        self.confirm_exit()
                     elif event.type == pygame.MOUSEBUTTONDOWN:
                         if self.current_player == self.player:
                             mouse_x, mouse_y = event.pos
@@ -285,5 +320,5 @@ class Game:
         self.screen.blit(player_score_text, (850, 200))
         self.screen.blit(computer_score_text, (850, 300))
 
-if __name__ == "__main__":
+if _name_ == "_main_":
     Game().run()
